@@ -35,8 +35,11 @@ def load(query: str) -> pd.DataFrame:
 
 
 # ── Header ────────────────────────────────────────────────────────────────────
-st.title("🏦 Banking Fraud Analytics Dashboard")
-st.caption("Pipeline ETL → PostgreSQL → Analytics | Dataset: PaySim 6.3M transacciones financieras")
+col_title, col_btn = st.columns([5, 1])
+col_title.title("🏦 Banking Fraud Analytics Dashboard")
+col_title.caption("Pipeline ETL → PostgreSQL → Analytics | Dataset: PaySim 6.3M transacciones financieras")
+if col_btn.button("🔄 Refresh"):
+    st.cache_data.clear()
 
 # ── KPI Cards (fila superior) ─────────────────────────────────────────────────
 summary = load("SELECT * FROM vw_executive_summary").iloc[0]
@@ -45,7 +48,7 @@ c1, c2, c3, c4 = st.columns(4)
 c1.metric("Total Transacciones",  f"{int(summary['total_transactions']):,}")
 c2.metric("Volumen Total",        f"${float(summary['total_volume']):,.0f}")
 c3.metric("Tasa de Fraude",       f"{float(summary['fraud_rate_pct']):.4f}%")
-c4.metric("Precisión de Detección", f"{float(summary['detection_precision_pct'] or 0):.1f}%")
+c4.metric("Transacciones Alto Riesgo", f"{int(summary['high_risk_count']):,}")
 
 st.divider()
 

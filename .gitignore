@@ -1,3 +1,5 @@
 .env
 data/
 __pycache__/
+paysim_dataset.csv
+data/

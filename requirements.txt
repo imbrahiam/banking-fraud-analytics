@@ -4,3 +4,4 @@ sqlalchemy==2.0.23
 python-dotenv==1.0.0
 streamlit==1.31.0
 plotly==5.19.0
+watchdog==6.0.0

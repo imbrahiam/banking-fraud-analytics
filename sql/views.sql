@@ -9,9 +9,13 @@ SELECT
     ROUND(SUM(is_fraud::int)::numeric / COUNT(*) * 100, 4)
                                                       AS fraud_rate_pct,
     SUM(is_flagged_fraud::int)                        AS total_flagged,
-    ROUND(SUM(is_fraud::int)::numeric
-        / NULLIF(SUM(is_flagged_fraud::int), 0) * 100, 2)
-                                                      AS detection_precision_pct,
+    -- Recall: de todos los fraudes reales, cuántos fueron detectados
+    ROUND(
+        SUM((is_fraud AND is_flagged_fraud)::int)::numeric
+        / NULLIF(SUM(is_fraud::int), 0) * 100, 2
+    )                                                 AS detection_recall_pct,
+    -- High risk: transacciones clasificadas como riesgo alto
+    SUM((risk_tier = 'HIGH')::int)                    AS high_risk_count,
     COUNT(DISTINCT name_orig)                         AS unique_senders,
     ROUND(AVG(amount), 2)                             AS avg_transaction_amount
 FROM transactions;
